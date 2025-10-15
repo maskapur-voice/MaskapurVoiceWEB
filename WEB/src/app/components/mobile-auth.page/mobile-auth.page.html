@@ -14,10 +14,18 @@
         <h3>Verification Code</h3>
         <p class="subtitle">We have sent the verification code to your email address</p>
         <div class="otp-inputs">
-          <ion-input type="text" maxlength="1" [(ngModel)]="otpValue[0]" class="otp-box"></ion-input>
-          <ion-input type="text" maxlength="1" [(ngModel)]="otpValue[1]" class="otp-box"></ion-input>
-          <ion-input type="text" maxlength="1" [(ngModel)]="otpValue[2]" class="otp-box"></ion-input>
-          <ion-input type="text" maxlength="1" [(ngModel)]="otpValue[3]" class="otp-box"></ion-input>
+            <div class="otp-box">
+            <ion-input type="text" maxlength="1" [value]="otpValue[0]" (ionInput)="onOtpInput(0, $event)" inputmode="numeric"></ion-input>
+            </div>
+            <div class="otp-box">
+            <ion-input type="text" maxlength="1" [value]="otpValue[1]" (ionInput)="onOtpInput(1, $event)" inputmode="numeric"></ion-input>
+            </div>
+            <div class="otp-box">
+            <ion-input type="text" maxlength="1" [value]="otpValue[2]" (ionInput)="onOtpInput(2, $event)" inputmode="numeric"></ion-input>
+            </div>
+            <div class="otp-box">
+            <ion-input type="text" maxlength="1" [value]="otpValue[3]" (ionInput)="onOtpInput(3, $event)" inputmode="numeric"></ion-input>
+            </div>
         </div>
         <ion-button expand="block" class="confirm-btn" (click)="verifyOtp()">Confirm</ion-button>
       </div>

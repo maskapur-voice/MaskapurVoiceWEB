@@ -1,0 +1,27 @@
+::ng-deep .auth-content {
+  .scroll-y {
+    overflow-y: hidden !important;
+  }
+}
+
+/* Global toast styles */
+.toast-danger {
+  --background: #c62828 !important; /* red */
+  --color: #ffffff !important; /* white text */
+}
+
+/* Import ngx-toastr styles */
+/* toastr CSS is added via angular.json styles array */
+
+/* Ensure toastr is visible above other UI and interactive */
+.toast-container {
+  z-index: 2147483647 !important; /* very high to be above Ionic components */
+  pointer-events: auto !important;
+}
+.ngx-toastr {
+  opacity: 1 !important;
+  display: block !important;
+}
+.toast-bottom-center {
+  bottom: 12px !important;
+}
