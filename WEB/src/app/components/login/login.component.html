@@ -1,11 +1,59 @@
 <div class="login-wrapper">
+  <div class="logo-container">
+    <img src="images/ManaMaskapurLogo.png" alt="Mana Maskapur Logo" class="logo">
+  </div>
   <h2>Login</h2>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <label>Mobile Number</label>
-    <input type="tel" formControlName="mobile" placeholder="Enter mobile number" />
-    @if (form.controls.mobile.invalid && form.controls.mobile.touched) {
-      <div class="error">Invalid mobile</div>
-    }
-    <button type="submit" [disabled]="loading || form.invalid">{{ loading ? 'Sending...' : 'Send OTP' }}</button>
-  </form>
+  
+  <!-- Mobile Number Form -->
+  <div *ngIf="!showOtpForm">
+    <form [formGroup]="mobileForm" (ngSubmit)="sendOtp()">
+      <label>Mobile Number</label>
+      <input type="tel" formControlName="mobile" placeholder="Enter mobile number" />
+      @if (mobileForm.controls.mobile.invalid && mobileForm.controls.mobile.touched) {
+        <div class="error">Invalid mobile</div>
+      }
+      <button type="submit" [disabled]="loading || mobileForm.invalid">
+        {{ loading ? 'Sending...' : 'Send OTP' }}
+      </button>
+    </form>
+  </div>
+
+  <!-- OTP Verification Form -->
+  <div *ngIf="showOtpForm">
+    <div class="mobile-display">
+      <p>OTP sent to: <strong>{{ mobile }}</strong></p>
+      <button type="button" class="edit-mobile-btn" (click)="editMobile()">Edit Number</button>
+    </div>
+    
+    <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
+      <label>Enter OTP</label>
+      <input type="text" 
+             formControlName="code" 
+             placeholder="Enter 6-digit OTP" 
+             maxlength="6"
+             class="otp-input" />
+      @if (otpForm.controls.code.invalid && otpForm.controls.code.touched) {
+        <div class="error">Invalid OTP</div>
+      }
+      
+      <button type="submit" [disabled]="loading || otpForm.invalid">
+        {{ loading ? 'Verifying...' : 'Verify OTP' }}
+      </button>
+    </form>
+
+    <div class="resend-section">
+      <button type="button" 
+              class="resend-btn" 
+              [disabled]="resendLoading || remaining > 0"
+              (click)="resendOtp()">
+        @if (resendLoading) {
+          Resending...
+        } @else if (remaining > 0) {
+          Resend in {{ remaining }}s
+        } @else {
+          Resend OTP
+        }
+      </button>
+    </div>
+  </div>
 </div>

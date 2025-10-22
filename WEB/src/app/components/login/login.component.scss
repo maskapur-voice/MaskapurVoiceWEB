@@ -1,6 +1,113 @@
-.login-wrapper { max-width: 320px; margin: 40px auto; display: flex; flex-direction: column; gap: 12px; }
-form { display: flex; flex-direction: column; gap: 12px; }
-input { padding: 8px 10px; font-size: 16px; }
-button { padding: 10px; background:#1976d2; color:#fff; border:none; cursor:pointer; }
-button:disabled { opacity:.6; cursor:not-allowed; }
-.error { color:#d32f2f; font-size:12px; }
+.login-wrapper { 
+  max-width: 320px; 
+  margin: 40px auto; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 10px;
+  min-height: 80px;
+}
+
+.logo {
+  max-width: 200px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+form { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+}
+
+input { 
+  padding: 8px 10px; 
+  font-size: 16px; 
+}
+
+.otp-input {
+  text-align: center;
+  letter-spacing: 2px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+button { 
+  padding: 10px; 
+  background: #1976d2; 
+  color: #fff; 
+  border: none; 
+  cursor: pointer; 
+  border-radius: 4px;
+}
+
+button:disabled { 
+  opacity: .6; 
+  cursor: not-allowed; 
+}
+
+.error { 
+  color: #d32f2f; 
+  font-size: 12px; 
+}
+
+.mobile-display {
+  background: #f5f5f5;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.mobile-display p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.edit-mobile-btn {
+  background: #fff;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+  padding: 4px 12px;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.edit-mobile-btn:hover {
+  background: #1976d2;
+  color: #fff;
+}
+
+.resend-section {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.resend-btn {
+  background: transparent;
+  color: #1976d2;
+  border: 1px solid #1976d2;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.resend-btn:hover:not(:disabled) {
+  background: #1976d2;
+  color: #fff;
+}
+
+.resend-btn:disabled {
+  color: #999;
+  border-color: #999;
+}

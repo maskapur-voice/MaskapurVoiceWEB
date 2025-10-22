@@ -188,6 +188,6 @@ app.get('/', (req, res) => {
   res.json({ service: 'otp-auth-backend', endpoints: ['/auth/send-otp', '/auth/verify', '/auth/health', '/sos/save-photo'] });
 });
 
-app.listen(PORT, () => console.log(`OTP auth server running on port ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`OTP auth server running on port ${PORT}, accessible from all interfaces`));
 
 module.exports = app;
