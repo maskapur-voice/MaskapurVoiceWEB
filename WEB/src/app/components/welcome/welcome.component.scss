@@ -38,3 +38,82 @@ h1 {
   color: #888;
   font-size: 0.9rem;
 }
+
+/* SOS Button */
+.sos-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff3b3b 0%, #d32f2f 100%);
+  border: 3px solid #fff;
+  box-shadow: 0 4px 20px rgba(211, 47, 47, 0.4),
+              0 0 0 0 rgba(211, 47, 47, 0.7);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  animation: pulse-sos 2s infinite;
+}
+
+.sos-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(211, 47, 47, 0.6),
+              0 0 0 0 rgba(211, 47, 47, 0.7);
+}
+
+.sos-button:active {
+  transform: scale(0.95);
+}
+
+.sos-icon {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
+.sos-text {
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse-sos {
+  0% {
+    box-shadow: 0 4px 20px rgba(211, 47, 47, 0.4),
+                0 0 0 0 rgba(211, 47, 47, 0.7);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(211, 47, 47, 0.4),
+                0 0 0 15px rgba(211, 47, 47, 0);
+  }
+  100% {
+    box-shadow: 0 4px 20px rgba(211, 47, 47, 0.4),
+                0 0 0 0 rgba(211, 47, 47, 0);
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .sos-button {
+    bottom: 16px;
+    right: 16px;
+    width: 60px;
+    height: 60px;
+  }
+  
+  .sos-icon {
+    font-size: 24px;
+  }
+  
+  .sos-text {
+    font-size: 11px;
+  }
+}

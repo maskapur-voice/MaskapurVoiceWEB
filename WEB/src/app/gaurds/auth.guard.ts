@@ -6,12 +6,11 @@ export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    // Check localStorage/sessionStorage for OTP flag
-    if (localStorage.getItem('otpVerified') === 'true') {
+    const token = localStorage.getItem('authToken');
+    if (token) {
       return true;
     }
-    // Not verified, redirect to OTP page
-    this.router.navigate(['/auth']);
+    this.router.navigate(['/login']);
     return false;
   }
 }

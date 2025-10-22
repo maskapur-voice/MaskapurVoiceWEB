@@ -1,22 +1,23 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IonicModule } from '@ionic/angular';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MobileAuthPage } from './components/mobile-auth.page/mobile-auth.page';
 import { WelcomeComponent } from './components/welcome/welcome.component';
-import { BlankComponent } from './blank/blank.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { ToastrModule } from 'ngx-toastr'
+import { LoginComponent } from './components/login/login.component';
+import { VerifyOtpComponent } from './components/verify-otp/verify-otp.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MobileAuthPage,
     WelcomeComponent,
-    BlankComponent
+    LoginComponent,
+    VerifyOtpComponent
   ],
   imports: [
     BrowserModule,
@@ -25,6 +26,7 @@ import { ToastrModule } from 'ngx-toastr'
     FormsModule,
     ReactiveFormsModule,
     IonicModule.forRoot(),
+    HttpClientModule,
     ToastrModule.forRoot()
   ],
   providers: [],

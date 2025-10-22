@@ -1,0 +1,11 @@
+<div class="login-wrapper">
+  <h2>Login</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>Mobile Number</label>
+    <input type="tel" formControlName="mobile" placeholder="Enter mobile number" />
+    @if (form.controls.mobile.invalid && form.controls.mobile.touched) {
+      <div class="error">Invalid mobile</div>
+    }
+    <button type="submit" [disabled]="loading || form.invalid">{{ loading ? 'Sending...' : 'Send OTP' }}</button>
+  </form>
+</div>
