@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { EnvironmentService } from '../../services/environment.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -21,7 +22,13 @@ export class LoginComponent {
   remaining = 0;
   timer?: any;
 
-  constructor(private fb: FormBuilder, private auth: AuthService, private router: Router, private toastr: ToastrService) {
+  constructor(
+    private fb: FormBuilder, 
+    private auth: AuthService, 
+    private router: Router, 
+    private toastr: ToastrService,
+    public envService: EnvironmentService
+  ) {
     this.mobileForm = this.fb.group({
       mobile: ['', [Validators.required, Validators.pattern('^(\\+?[1-9]\\d{7,14})$')]]
     });
@@ -29,6 +36,12 @@ export class LoginComponent {
     this.otpForm = this.fb.group({
       code: ['', [Validators.required, Validators.pattern('^\\d{6}$')]]
     });
+
+    // Log environment info when component loads
+    this.envService.log('Login component initialized');
+    if (this.envService.isNoApiMode) {
+      this.envService.log('🚫 No-API mode: Any mobile number and OTP will work');
+    }
   }
 
   sendOtp() {
@@ -42,7 +55,13 @@ export class LoginComponent {
         if (resp.success) {
           localStorage.setItem('pendingMobile', this.mobile);
           localStorage.setItem('otpLastSent', Date.now().toString());
-          this.toastr.success('OTP sent', 'Success');
+          
+          if (this.envService.isNoApiMode) {
+            this.toastr.success('Mock OTP sent! Use any 6-digit code to login.', 'No-API Mode');
+          } else {
+            this.toastr.success('OTP sent', 'Success');
+          }
+          
           this.showOtpForm = true;
           this.startCooldown();
         } else {
@@ -68,7 +87,13 @@ export class LoginComponent {
           localStorage.removeItem('pendingMobile');
           localStorage.removeItem('otpLastSent');
           localStorage.setItem('authToken', resp.token);
-          this.toastr.success('Login successful', 'Success');
+          
+          if (this.envService.isNoApiMode) {
+            this.toastr.success('Mock login successful! Redirecting to welcome page.', 'No-API Mode');
+          } else {
+            this.toastr.success('Login successful', 'Success');
+          }
+          
           this.router.navigate(['/home']);
         } else {
           this.toastr.error(resp.error || 'Verification failed', 'Error');
@@ -91,7 +116,12 @@ export class LoginComponent {
         if (resp.success) {
           localStorage.setItem('otpLastSent', Date.now().toString());
           this.startCooldown();
-          this.toastr.success('OTP resent', 'Success');
+          
+          if (this.envService.isNoApiMode) {
+            this.toastr.success('Mock OTP resent', 'No-API Mode');
+          } else {
+            this.toastr.success('OTP resent', 'Success');
+          }
         } else {
           this.toastr.error(resp.error || 'Resend failed', 'Error');
         }

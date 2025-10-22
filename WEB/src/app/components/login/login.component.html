@@ -1,4 +1,11 @@
 <div class="login-wrapper">
+  <!-- No-API Mode Indicator -->
+  @if (envService.isNoApiMode) {
+    <div class="no-api-banner">
+      🚫 No-API Mode Active - Any mobile number and OTP will work for testing
+    </div>
+  }
+  
   <div class="logo-container">
     <img src="images/ManaMaskapurLogo.png" alt="Mana Maskapur Logo" class="logo">
   </div>
@@ -27,6 +34,11 @@
     
     <form [formGroup]="otpForm" (ngSubmit)="verifyOtp()">
       <label>Enter OTP</label>
+      @if (envService.isNoApiMode) {
+        <div class="no-api-hint">
+          💡 No-API Mode: Use any 6-digit code (e.g., 123456)
+        </div>
+      }
       <input type="text" 
              formControlName="code" 
              placeholder="Enter 6-digit OTP" 
