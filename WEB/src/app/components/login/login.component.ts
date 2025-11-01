@@ -36,12 +36,6 @@ export class LoginComponent {
     this.otpForm = this.fb.group({
       code: ['', [Validators.required, Validators.pattern('^\\d{6}$')]]
     });
-
-    // Log environment info when component loads
-    this.envService.log('Login component initialized');
-    if (this.envService.isNoApiMode) {
-      this.envService.log('🚫 No-API mode: Any mobile number and OTP will work');
-    }
   }
 
   sendOtp() {
@@ -55,13 +49,8 @@ export class LoginComponent {
         if (resp.success) {
           localStorage.setItem('pendingMobile', this.mobile);
           localStorage.setItem('otpLastSent', Date.now().toString());
-          
-          if (this.envService.isNoApiMode) {
-            this.toastr.success('Mock OTP sent! Use any 6-digit code to login.', 'No-API Mode');
-          } else {
-            this.toastr.success('OTP sent', 'Success');
-          }
-          
+
+          this.toastr.success('OTP sent', 'Success');
           this.showOtpForm = true;
           this.startCooldown();
         } else {
@@ -87,13 +76,7 @@ export class LoginComponent {
           localStorage.removeItem('pendingMobile');
           localStorage.removeItem('otpLastSent');
           localStorage.setItem('authToken', resp.token);
-          
-          if (this.envService.isNoApiMode) {
-            this.toastr.success('Mock login successful! Redirecting to welcome page.', 'No-API Mode');
-          } else {
-            this.toastr.success('Login successful', 'Success');
-          }
-          
+          this.toastr.success('Login successful', 'Success');
           this.router.navigate(['/home']);
         } else {
           this.toastr.error(resp.error || 'Verification failed', 'Error');
@@ -116,12 +99,7 @@ export class LoginComponent {
         if (resp.success) {
           localStorage.setItem('otpLastSent', Date.now().toString());
           this.startCooldown();
-          
-          if (this.envService.isNoApiMode) {
-            this.toastr.success('Mock OTP resent', 'No-API Mode');
-          } else {
-            this.toastr.success('OTP resent', 'Success');
-          }
+          this.toastr.success('OTP resent', 'Success');
         } else {
           this.toastr.error(resp.error || 'Resend failed', 'Error');
         }

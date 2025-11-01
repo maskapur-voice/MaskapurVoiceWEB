@@ -1,68 +1,75 @@
 import { Injectable } from '@angular/core';
-import { RuntimeConfigService } from './runtime-config.service';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EnvironmentService {
+  private _isNoApiMode: boolean = false;
 
-  constructor(private runtimeConfig: RuntimeConfigService) {
-    console.log('🌍 Environment service initialized');
+  constructor() {
+    // Check if we're running in no-API mode
+    this.checkNoApiMode();
   }
 
   get isNoApiMode(): boolean {
-    return this.runtimeConfig.isNoApiMode;
+    return this._isNoApiMode;
   }
 
-  get isProduction(): boolean {
-    return false; // For now, always development
+  private async checkNoApiMode(): Promise<void> {
+    try {
+      const response = await fetch('/assets/runtime-config.json');
+      const config = await response.json();
+      this._isNoApiMode = config.noApi || false;
+    } catch (error) {
+      console.warn('Could not load runtime config, defaulting to API mode', error);
+      this._isNoApiMode = false;
+    }
   }
 
-  get isDevelopment(): boolean {
-    return !this.isProduction;
+  log(message: string, data?: any): void {
+    if (this._isNoApiMode) {
+      if (data !== undefined) {
+        console.log(`🚫 [NO-API MODE] ${message}`, data);
+      } else {
+        console.log(`� [NO-API MODE] ${message}`);
+      }
+    } else {
+      if (data !== undefined) {
+        console.log(`📡 [API MODE] ${message}`, data);
+      } else {
+        console.log(`�📡 [API MODE] ${message}`);
+      }
+    }
   }
 
-  /**
-   * Get mock data for API responses when in noApi mode
-   */
+  debug(message: string, data?: any): void {
+    if (this._isNoApiMode) {
+      if (data !== undefined) {
+        console.debug(`🚫 [NO-API DEBUG] ${message}`, data);
+      } else {
+        console.debug(`🚫 [NO-API DEBUG] ${message}`);
+      }
+    } else {
+      if (data !== undefined) {
+        console.debug(`📡 [API DEBUG] ${message}`, data);
+      } else {
+        console.debug(`📡 [API DEBUG] ${message}`);
+      }
+    }
+  }
+
+  warnNoApi(operation: string): void {
+    if (this._isNoApiMode) {
+      console.warn(`🚫 [NO-API MODE] ${operation} - Using mock response`);
+    }
+  }
+
   getMockResponse<T>(mockData: T): Observable<T> {
-    if (this.isNoApiMode) {
-      console.log('🚫 [NO-API] Returning mock data:', mockData);
+    if (this._isNoApiMode) {
+      console.log(`🚫 [NO-API MODE] Returning mock response:`, mockData);
       return of(mockData);
     }
-    throw new Error('getMockResponse should only be called in noApi mode');
-  }
-
-  /**
-   * Check if API calls should be made
-   */
-  shouldMakeApiCall(): boolean {
-    return !this.isNoApiMode;
-  }
-
-  /**
-   * Log message with environment context
-   */
-  log(message: string, ...optionalParams: any[]): void {
-    const prefix = this.isNoApiMode ? '[NO-API]' : '[API]';
-    console.log(`${prefix} ${message}`, ...optionalParams);
-  }
-
-  /**
-   * Debug message with environment context
-   */
-  debug(message: string, ...optionalParams: any[]): void {
-    const prefix = this.isNoApiMode ? '[NO-API-DEBUG]' : '[DEBUG]';
-    console.debug(`${prefix} ${message}`, ...optionalParams);
-  }
-
-  /**
-   * Show warning when in noApi mode
-   */
-  warnNoApi(action: string): void {
-    if (this.isNoApiMode) {
-      console.warn(`🚫 ${action} skipped - Running in No-API mode`);
-    }
+    return of(mockData);
   }
 }

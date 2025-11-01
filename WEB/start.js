@@ -1,98 +1,62 @@
-const fs = require('fs');
+const express = require('express');
+const { spawn } = require('child_process');
 const path = require('path');
-const { exec } = require('child_process');
+const fs = require('fs');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const params = {};
+const noApiMode = args.some(arg => arg.includes('noapi=true')) || args.includes('noapi');
 
-// Parse key=value arguments
-args.forEach(arg => {
-  if (arg.includes('=')) {
-    const [key, value] = arg.split('=');
-    params[key] = value;
-  }
-});
+console.log('🚀 Starting Maskapur Voice Application...');
+console.log(`📝 No-API Mode: ${noApiMode ? 'ENABLED' : 'DISABLED'}`);
 
-// Default configuration
-const config = {
-  noApi: params.noapi === 'true' || params.noapi === true,
-  host: params.host || '0.0.0.0',
-  port: params.port || '4200'
-};
-
-console.log('🚀 Starting application with:');
-console.log(`   - No API Mode: ${config.noApi}`);
-console.log(`   - Host: ${config.host}`);
-console.log(`   - Port: ${config.port}`);
-
-// Create runtime configuration file
+// Create runtime config
 const runtimeConfig = {
-  noApi: config.noApi,
+  noApi: noApiMode,
   timestamp: new Date().toISOString()
 };
 
-const runtimeConfigPath = path.join(__dirname, 'src/assets/runtime-config.json');
-
 // Ensure assets directory exists
-const assetsDir = path.dirname(runtimeConfigPath);
+const assetsDir = path.join(__dirname, 'src', 'assets');
 if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir, { recursive: true });
 }
 
-// Write runtime configuration
-try {
-  fs.writeFileSync(runtimeConfigPath, JSON.stringify(runtimeConfig, null, 2));
-  console.log('✅ Runtime config written to: src/assets/runtime-config.json');
-  
-  if (config.noApi) {
-    console.log('🚫 No-API mode enabled - using mock data');
-  }
-} catch (error) {
-  console.error('❌ Failed to write runtime config:', error);
+// Write runtime config
+const configPath = path.join(assetsDir, 'runtime-config.json');
+fs.writeFileSync(configPath, JSON.stringify(runtimeConfig, null, 2));
+
+console.log(`✅ Runtime config written to: ${configPath}`);
+console.log(`📄 Config: ${JSON.stringify(runtimeConfig, null, 2)}`);
+
+// Start Angular dev server
+console.log('🔄 Starting Angular development server...');
+
+const ngServe = spawn('ng', ['serve', '--host', '0.0.0.0'], {
+  stdio: 'inherit',
+  shell: true,
+  cwd: __dirname
+});
+
+ngServe.on('error', (error) => {
+  console.error('❌ Failed to start Angular dev server:', error.message);
   process.exit(1);
-}
-
-// Build Angular serve command
-let ngCommand = `ng serve --host ${config.host} --port ${config.port}`;
-
-// Add configuration based on mode
-if (config.noApi) {
-  ngCommand += ' --configuration development';
-  console.log('📦 Running: ' + ngCommand);
-} else {
-  console.log('📦 Running: ' + ngCommand);
-}
-
-// Execute Angular CLI command
-const child = exec(ngCommand, (error, stdout, stderr) => {
-  if (error) {
-    console.error('❌ Error starting Angular application:', error);
-    return;
-  }
-  if (stderr) {
-    console.error('⚠️ Angular CLI stderr:', stderr);
-  }
 });
 
-// Forward output from Angular CLI
-child.stdout.on('data', (data) => {
-  process.stdout.write(data);
-});
-
-child.stderr.on('data', (data) => {
-  process.stderr.write(data);
+ngServe.on('close', (code) => {
+  console.log(`🛑 Angular dev server exited with code ${code}`);
+  process.exit(code);
 });
 
 // Handle process termination
 process.on('SIGINT', () => {
-  console.log('\n🛑 Stopping application...');
-  child.kill('SIGINT');
+  console.log('\n🛑 Shutting down...');
+  ngServe.kill('SIGINT');
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('\n🛑 Terminating application...');
-  child.kill('SIGTERM');
+  console.log('\n🛑 Shutting down...');
+  ngServe.kill('SIGTERM');
   process.exit(0);
 });

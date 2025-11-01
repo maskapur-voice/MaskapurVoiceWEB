@@ -118,7 +118,8 @@ export class WelcomeComponent {
       }
       
       alert('🚨 SOS Alert Sent!\n\nEmergency services have been notified.' + 
-            (photoData ? '\n📸 Photo captured and saved.' : ''));
+            (photoData ? '\n📸 Photo captured and saved.' : '') + 
+            '\n📍 Location captured: ' + this.latitude + ', ' + this.longitude);
       
       // TODO: Implement actual emergency alert logic here
       // - Call emergency API
